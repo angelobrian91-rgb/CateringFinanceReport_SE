@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/frontend/login.html" },
+    { "source": "/login.html", "destination": "/frontend/login.html" },
+    { "source": "/register.html", "destination": "/frontend/register.html" },
+    { "source": "/index.html", "destination": "/frontend/index.html" },
+    { "source": "/style.css", "destination": "/frontend/style.css" }
+  ]
+}

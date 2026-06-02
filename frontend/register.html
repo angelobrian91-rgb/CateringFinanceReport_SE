@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CatFin-R — Daftar</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+body{min-height:100vh;display:flex;}
+.al{width:400px;flex-shrink:0;background:linear-gradient(145deg,var(--g900),var(--g950));display:flex;flex-direction:column;justify-content:space-between;padding:36px 40px;position:relative;overflow:hidden;transition:background .25s;}
+[data-theme="dark"] .al{background:linear-gradient(145deg,#0a0f16,#060a0f);}
+.al::before{content:'';position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(31,197,118,.08);top:-80px;right:-60px;pointer-events:none;}
+.al::after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(31,197,118,.06);bottom:-50px;left:-50px;pointer-events:none;}
+.orb{position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(31,197,118,.2),transparent 70%);top:45%;left:35%;transform:translate(-50%,-50%);animation:orb 7s ease-in-out infinite;}
+@keyframes orb{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.25)}}
+.logo{display:flex;align-items:center;gap:11px;position:relative;z-index:1;}
+.logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--g500),var(--g400));display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 4px 12px rgba(31,197,118,.4);}
+.logo-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;}
+.logo-sub{font-size:9.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38);}
+.hero{position:relative;z-index:1;}
+.hl{font-size:34px;font-weight:800;line-height:1.18;color:#fff;letter-spacing:-.4px;}
+.hl em{color:var(--g400);font-style:italic;}
+.hs{font-size:13.5px;color:rgba(255,255,255,.5);margin-top:12px;line-height:1.7;}
+.lft-foot{position:relative;z-index:1;}
+.dm-toggle-auth{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);cursor:pointer;color:rgba(255,255,255,.75);font-size:13px;font-weight:600;width:fit-content;transition:background .2s;}
+.dm-toggle-auth:hover{background:rgba(255,255,255,.18);}
+.ar{flex:1;display:flex;align-items:center;justify-content:center;padding:36px 56px;background:var(--bg);overflow-y:auto;}
+.fw{width:100%;max-width:420px;}
+.at{font-size:28px;font-weight:800;color:var(--tp);letter-spacing:-.4px;margin-bottom:4px;line-height:1.2;}
+.at em{color:var(--g600);font-style:italic;}
+.as{font-size:13.5px;color:var(--ts);margin-bottom:24px;}
+.lnk{color:var(--g600);font-weight:700;cursor:pointer;}
+.lnk:hover{text-decoration:underline;}
+.aft{text-align:center;font-size:13px;color:var(--ts);margin-top:18px;}
+.pw{position:relative;}
+.pw .form-input{padding-right:38px;}
+.sp{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--tm);}
+.ab{display:none;padding:11px 14px;border-radius:9px;background:var(--red50);color:var(--red600);font-size:13px;margin-bottom:14px;border:1px solid var(--red100);font-weight:500;}
+.sb{height:3px;background:var(--gray200);border-radius:99px;margin-top:6px;overflow:hidden;}
+.sf{height:100%;border-radius:99px;transition:width .3s,background .3s;}
+@media(max-width:860px){.al{display:none;}.ar{padding:36px 26px;}}
+</style>
+</head>
+<body>
+<div class="al">
+  <div class="orb"></div>
+  <div class="logo">
+    <div class="logo-mark">🍱</div>
+    <div><div class="logo-name">CatFin-R</div><div class="logo-sub">Catering Finance</div></div>
+  </div>
+  <div class="hero">
+    <div class="hl">Mulai kelola bisnis<br><em>catering Anda</em><br>hari ini.</div>
+    <p class="hs">Gratis untuk bisnis catering skala kecil. Tidak perlu kartu kredit.</p>
+  </div>
+  <div class="lft-foot">
+    <div class="dm-toggle-auth" onclick="toggleDM()">
+      <span id="dmI">🌙</span><span id="dmL">Dark Mode</span>
+    </div>
+  </div>
+</div>
+<div class="ar">
+  <div class="fw fade-up">
+    <h1 class="at">Buat <em>Akun Baru</em></h1>
+    <p class="as">Daftarkan bisnis catering Anda</p>
+    <div class="ab" id="ab"></div>
+    <div class="form-group"><label class="form-label">Nama Bisnis *</label><input class="form-input" id="rB" placeholder="Catering Ibu Sari"/></div>
+    <div class="form-group"><label class="form-label">Nama Pengelola *</label><input class="form-input" id="rN" placeholder="Nama lengkap"/></div>
+    <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" id="rE" placeholder="email@example.com"/></div>
+    <div class="form-group"><label class="form-label">Nomor Telepon *</label><input class="form-input" type="tel" id="rT" placeholder="+62"/></div>
+    <div class="form-row form-row-2">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Password *</label>
+        <div class="pw">
+          <input class="form-input" type="password" id="rP" placeholder="Min. 8 karakter" oninput="cs(this.value)"/>
+          <button class="sp" onclick="tp('rP',this)">👁</button>
+        </div>
+        <div class="sb"><div class="sf" id="sf" style="width:0%"></div></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Konfirmasi *</label>
+        <div class="pw">
+          <input class="form-input" type="password" id="rC" placeholder="Ulangi password"/>
+          <button class="sp" onclick="tp('rC',this)">👁</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:22px;" onclick="doReg()">Daftar &amp; Mulai Sekarang</button>
+    <p class="aft">Sudah punya akun? <a href="login.html" class="lnk">Masuk di sini →</a></p>
+  </div>
+</div>
+<script>
+let dark=localStorage.getItem('cfr-dark')==='1';
+function applyDM(){
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.getElementById('dmI').textContent=dark?'☀️':'🌙';
+  document.getElementById('dmL').textContent=dark?'Light Mode':'Dark Mode';
+  localStorage.setItem('cfr-dark',dark?'1':'0');
+}
+function toggleDM(){dark=!dark;applyDM();}
+applyDM();
+function tp(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+function cs(v){
+  let s=0;
+  if(v.length>=8)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^a-zA-Z0-9]/.test(v))s++;
+  const f=document.getElementById('sf');
+  f.style.width=(s/4*100)+'%';
+  f.style.background=s<=1?'#ef4444':s===2?'#f59e0b':s===3?'#84cc16':'#16a862';
+}
+function doReg(){
+  const b=document.getElementById('ab');
+  const fields=['rB','rN','rE','rT','rP'];
+  if(fields.some(f=>!document.getElementById(f).value.trim())){b.textContent='Semua field wajib diisi.';b.style.display='block';return;}
+  const p=document.getElementById('rP').value,c=document.getElementById('rC').value;
+  if(p.length<8){b.textContent='Password minimal 8 karakter.';b.style.display='block';return;}
+  if(p!==c){b.textContent='Konfirmasi password tidak cocok.';b.style.display='block';return;}
+  b.style.display='none';
+  window.location.href='index.html';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doReg();});
+</script>
+</body>
+</html>
