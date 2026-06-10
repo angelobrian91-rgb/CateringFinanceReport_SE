@@ -1,9 +1,11 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/frontend/login.html" },
-    { "source": "/login.html", "destination": "/frontend/login.html" },
-    { "source": "/register.html", "destination": "/frontend/register.html" },
-    { "source": "/index.html", "destination": "/frontend/index.html" },
-    { "source": "/style.css", "destination": "/frontend/style.css" }
+  "version": 2,
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/", "dest": "/frontend/login.html" },
+    { "src": "/login\\.html", "dest": "/frontend/login.html" },
+    { "src": "/register\\.html", "dest": "/frontend/register.html" },
+    { "src": "/index\\.html", "dest": "/frontend/index.html" },
+    { "src": "/style\\.css", "dest": "/frontend/style.css" }
   ]
 }

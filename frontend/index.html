@@ -1192,7 +1192,7 @@ function renderProduk(rows){
 }
 async function fetchProduk(){
   try{
-    const d=await(await fetch(API+'/produk/index')).json();
+    const d=await(await fetch(API+'/produk')).json();
     renderProduk(d);
   }catch(e){toast('Gagal memuat produk','#ef4444');}
 }
@@ -1205,7 +1205,7 @@ async function tambahProdukBaru(){
   const smn=parseInt(document.getElementById('tpSmnB').value)||0;
   if(!nama||!hrg){toast('Nama dan harga wajib diisi','#ef4444');return;}
   try{
-    const pd=await(await fetch(API+'/produk/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nama,kategori:kat,harga:hrg,stok:stk,stok_minimum:smn})})).json();
+    const pd=await(await fetch(API+'/produk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nama,kategori:kat,harga:hrg,stok:stk,stok_minimum:smn})})).json();
     if(!pd.success){toast('Gagal menyimpan produk','#ef4444');return;}
     const produk_id=pd.id;
     for(const row of document.querySelectorAll('#resepRows .resep-row')){
@@ -1213,7 +1213,7 @@ async function tambahProdukBaru(){
       const qty=parseFloat(row.querySelector('.resep-qty').value)||0;
       const bahan_id=parseInt(sel.value);
       if(bahan_id&&qty>0){
-        await fetch(API+'/resep/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({produk_id,bahan_baku_id:bahan_id,jumlah:qty})});
+        await fetch(API+'/resep',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({produk_id,bahan_baku_id:bahan_id,jumlah:qty})});
       }
     }
     document.getElementById('resepRows').innerHTML='';
@@ -1320,7 +1320,7 @@ async function saveEP(){
   const stk=_epStk;
   const smn=parseInt(document.getElementById('epSmn').value)||0;
   try{
-    const d=await(await fetch(API+'/produk/index',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epId,nama,kategori:kat,harga:hrg,stok:stk,stok_minimum:smn})})).json();
+    const d=await(await fetch(API+'/produk',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epId,nama,kategori:kat,harga:hrg,stok:stk,stok_minimum:smn})})).json();
     if(d.success){closeModal('mEP');await fetchProduk();await fetchDashboard();toast('Produk diperbarui!');}else{toast('Gagal memperbarui produk','#ef4444');}
   }catch(e){toast('Gagal memperbarui produk','#ef4444');}
 }
@@ -1330,7 +1330,7 @@ async function hapusProduk(){
   const nama=_epRow?_epRow.cells[0].textContent:'produk ini';
   if(!confirm('Hapus produk "'+nama+'" dari daftar?'))return;
   try{
-    const d=await(await fetch(API+'/produk/index?id='+_epId,{method:'DELETE'})).json();
+    const d=await(await fetch(API+'/produk?id='+_epId,{method:'DELETE'})).json();
     if(d.success){closeModal('mEP');await fetchProduk();await fetchDashboard();toast('Produk '+nama+' dihapus!','#ef4444');}
   }catch(e){toast('Gagal menghapus produk','#ef4444');}
 }
@@ -1345,7 +1345,7 @@ async function loadResepPreview(produk_id){
   if(!produk_id){box.textContent='Pilih produk untuk melihat kebutuhan bahan baku.';return;}
   box.textContent='Memuat resep...';
   try{
-    const rows=await(await fetch(API+'/resep/index?produk_id='+produk_id)).json();
+    const rows=await(await fetch(API+'/resep?produk_id='+produk_id)).json();
     if(!rows.length){
       box.innerHTML='<span style="color:var(--g600)">✓</span> Produk ini tidak memiliki resep — stok akan ditambah langsung tanpa mengurangi bahan baku.';
       return;
@@ -1380,7 +1380,7 @@ async function quickSimpanBahan(){
   const smn=parseFloat(document.getElementById('qabnSmn').value)||0;
   if(!nama){toast('Nama bahan wajib diisi','#ef4444');return;}
   try{
-    const d=await(await fetch(API+'/bahanbaku/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nama,kategori:'Lainnya',harga:0,satuan,stok,stok_minimum:smn})})).json();
+    const d=await(await fetch(API+'/bahanbaku',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nama,kategori:'Lainnya',harga:0,satuan,stok,stok_minimum:smn})})).json();
     if(d.success){
       document.getElementById('quickAddBahan').style.display='none';
       ['qabnNama','qabnStk','qabnSmn'].forEach(id=>document.getElementById(id).value='');
@@ -1414,7 +1414,7 @@ function renderBahan(rows){
 }
 async function fetchBahan(){
   try{
-    const d=await(await fetch(API+'/bahanbaku/index')).json();
+    const d=await(await fetch(API+'/bahanbaku')).json();
     renderBahan(d);
   }catch(e){toast('Gagal memuat bahan baku','#ef4444');}
 }
@@ -1428,7 +1428,7 @@ async function tambahBahanBaru(){
   const smn=parseFloat(document.getElementById('tbSmnB').value)||0;
   if(!nama){toast('Nama bahan wajib diisi','#ef4444');return;}
   try{
-    const d=await(await fetch(API+'/bahanbaku/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nama,kategori:kat,harga:hrg,satuan:unit,stok:stk,stok_minimum:smn})})).json();
+    const d=await(await fetch(API+'/bahanbaku',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nama,kategori:kat,harga:hrg,satuan:unit,stok:stk,stok_minimum:smn})})).json();
     if(d.success){
       ['tbNamaB','tbHrgB','tbStkB','tbSmnB'].forEach(id=>document.getElementById(id).value='');
       closeModal('mTambahBahan');
@@ -1484,7 +1484,7 @@ async function saveEB(){
   const stk=_ebStk;
   const smn=parseFloat(document.getElementById('ebSmn').value)||0;
   try{
-    const res=await fetch(API+'/bahanbaku/index',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_ebId,nama,kategori:kat,harga:hrg,satuan:unit,stok:stk,stok_minimum:smn})});
+    const res=await fetch(API+'/bahanbaku',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_ebId,nama,kategori:kat,harga:hrg,satuan:unit,stok:stk,stok_minimum:smn})});
     const text=await res.text();
     let d;
     try{d=JSON.parse(text);}catch{toast('Server error: '+text.substring(0,120),'#ef4444');return;}
@@ -1498,7 +1498,7 @@ async function hapusBahan(){
   const nama=_ebRow?_ebRow.cells[0].textContent:'bahan ini';
   if(!confirm('Hapus bahan "'+nama+'" dari daftar?'))return;
   try{
-    const d=await(await fetch(API+'/bahanbaku/index?id='+_ebId,{method:'DELETE'})).json();
+    const d=await(await fetch(API+'/bahanbaku?id='+_ebId,{method:'DELETE'})).json();
     if(d.success){closeModal('mEB');await fetchBahan();await fetchDashboard();toast('Bahan '+nama+' dihapus!','#ef4444');}
   }catch(e){toast('Gagal menghapus bahan','#ef4444');}
 }
@@ -1661,7 +1661,7 @@ function renderPemasukan(rows){
 }
 async function fetchPemasukan(){
   try{
-    const d=await(await fetch(API+'/pemasukan/index')).json();
+    const d=await(await fetch(API+'/pemasukan')).json();
     renderPemasukan(d);
   }catch(e){toast('Gagal memuat pemasukan','#ef4444');}
 }
@@ -1675,7 +1675,7 @@ async function simpanPm(){
   const inv=document.getElementById('pmInv').value||null;
   if(!desc||!jml){toast('Deskripsi dan jumlah wajib diisi','#ef4444');return;}
   try{
-    const d=await(await fetch(API+'/pemasukan/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tanggal:tgl,keterangan:desc,sumber,jumlah:parseInt(jml),metode_pembayaran:metode,nomor_invoice:inv})})).json();
+    const d=await(await fetch(API+'/pemasukan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tanggal:tgl,keterangan:desc,sumber,jumlah:parseInt(jml),metode_pembayaran:metode,nomor_invoice:inv})})).json();
     if(d.success){
       ['pmDesc','pmJumlah','pmInv'].forEach(id=>document.getElementById(id).value='');
       closeModal('mPemasukan');
@@ -1707,7 +1707,7 @@ async function savePm(){
   const tgl=_epmRow?_epmRow.dataset.tanggal:new Date().toISOString().split('T')[0];
   const sumber=_epmRow?_epmRow.querySelectorAll('td')[2].textContent:'';
   try{
-    const d=await(await fetch(API+'/pemasukan/index',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epmId,keterangan:desc,jumlah:parseInt(jml),metode_pembayaran:metode,nomor_invoice:inv,tanggal:tgl,sumber})})).json();
+    const d=await(await fetch(API+'/pemasukan',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epmId,keterangan:desc,jumlah:parseInt(jml),metode_pembayaran:metode,nomor_invoice:inv,tanggal:tgl,sumber})})).json();
     if(d.success){closeModal('mEPm');await fetchPemasukan();await fetchDashboard();toast('Pemasukan diperbarui!');}
   }catch(e){toast('Gagal memperbarui pemasukan','#ef4444');}
 }
@@ -1756,7 +1756,7 @@ function renderPengeluaran(rows){
 }
 async function fetchPengeluaran(){
   try{
-    const d=await(await fetch(API+'/pengeluaran/index')).json();
+    const d=await(await fetch(API+'/pengeluaran')).json();
     renderPengeluaran(d);
   }catch(e){toast('Gagal memuat pengeluaran','#ef4444');}
 }
@@ -1769,7 +1769,7 @@ async function simpanPn(){
   const tgl=document.getElementById('pnTgl').value;
   if(!desc||!jml){toast('Deskripsi dan jumlah wajib diisi','#ef4444');return;}
   try{
-    const d=await(await fetch(API+'/pengeluaran/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tanggal:tgl,keterangan:desc,kategori:kat,jumlah:parseInt(jml),metode_pembayaran:metode})})).json();
+    const d=await(await fetch(API+'/pengeluaran',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tanggal:tgl,keterangan:desc,kategori:kat,jumlah:parseInt(jml),metode_pembayaran:metode})})).json();
     if(d.success){
       ['pnDesc','pnJumlah'].forEach(id=>document.getElementById(id).value='');
       closeModal('mPengeluaran');
@@ -1798,7 +1798,7 @@ async function savePn(){
   const kat=document.getElementById('epnKat').value;
   const metode=document.getElementById('epnMetode').value;
   try{
-    const d=await(await fetch(API+'/pengeluaran/index',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epnId,tanggal:_epnRow?_epnRow.dataset.tanggal:new Date().toISOString().split('T')[0],keterangan:desc,kategori:kat,jumlah:parseInt(jml),metode_pembayaran:metode})})).json();
+    const d=await(await fetch(API+'/pengeluaran',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epnId,tanggal:_epnRow?_epnRow.dataset.tanggal:new Date().toISOString().split('T')[0],keterangan:desc,kategori:kat,jumlah:parseInt(jml),metode_pembayaran:metode})})).json();
     if(d.success){closeModal('mEPn');await fetchPengeluaran();await fetchDashboard();toast('Pengeluaran diperbarui!');}
   }catch(e){toast('Gagal memperbarui pengeluaran','#ef4444');}
 }
@@ -1810,7 +1810,7 @@ fetchPengeluaran();
 ══════════════════════════════════════════ */
 async function fetchDashboard(){
   try{
-    const d=await(await fetch(API+'/dashboard/index')).json();
+    const d=await(await fetch(API+'/dashboard')).json();
     const rp=v=>'Rp'+parseInt(v).toLocaleString('id-ID');
     const sp=s=>'<span style="font-size:14px;font-weight:500;color:var(--tm)">'+s+'</span>';
     /* stok produk section */
@@ -1870,7 +1870,7 @@ async function openHistory(type){
   document.getElementById('tbHistory').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--tm)">Memuat...</td></tr>';
   openModal('mHistory');
   try{
-    const d=await(await fetch(API+'/history/index?type='+type)).json();
+    const d=await(await fetch(API+'/history?type='+type)).json();
     renderHistory(d);
   }catch(e){
     document.getElementById('tbHistory').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:#ef4444">Gagal memuat riwayat</td></tr>';
@@ -1905,7 +1905,7 @@ function renderHistory(rows){
 ══════════════════════════════════════════ */
 async function fetchDashboardHistory(){
   try{
-    const d=await(await fetch(API+'/history/index?type=produk')).json();
+    const d=await(await fetch(API+'/history?type=produk')).json();
     const totalTerjual=d.filter(r=>r.action_type==='remove_sold').reduce((s,r)=>s+(parseFloat(r.jumlah)||0),0);
     const el=document.getElementById('dashPesananTerjual');
     if(el)el.innerHTML=Math.round(totalTerjual)+' <span style="font-size:15px;font-weight:500;color:var(--tm)">item</span>';
