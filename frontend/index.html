@@ -883,11 +883,10 @@ function fPemasukan(){
 function fPengeluaran(){
   const k=document.getElementById('fKatPn').value.toLowerCase();
   const bln=document.getElementById('fBulanPn').value;
-  const blnLabel=bln?(_ms[parseInt(bln.split('-')[1])-1]||'').toLowerCase():'';
   const visRows=[];
   document.querySelectorAll('#tbPengeluaran tr').forEach(tr=>{
     const mk=!k||tr.dataset.k.toLowerCase()===k;
-    const mb=!bln||(tr.cells[0]&&tr.cells[0].textContent.toLowerCase().includes(blnLabel));
+    const mb=!bln||(tr.dataset.tanggal||'').startsWith(bln);
     const vis=mk&&mb;
     tr.style.display=vis?'':'none';
     if(vis){
@@ -1591,7 +1590,9 @@ function updateLaporan(){
    PEMASUKAN API
 ══════════════════════════════════════════ */
 function _fmtTgl(tgl){
-  const d=new Date(tgl+'T00:00:00');
+  if(!tgl)return '—';
+  const dateStr=(tgl+'').split('T')[0];
+  const d=new Date(dateStr+'T00:00:00');
   const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear();
 }
@@ -1647,7 +1648,7 @@ function renderPemasukan(rows){
     const tr=document.createElement('tr');
     tr.dataset.m=r.metode_pembayaran;
     tr.dataset.id=r.id;
-    tr.dataset.tanggal=r.tanggal;
+    tr.dataset.tanggal=(r.tanggal+'').split('T')[0];
     tr.dataset.s=(r.sumber||'Lainnya').toLowerCase();
     const rp='Rp'+parseInt(r.jumlah).toLocaleString('id-ID');
     const inv=r.nomor_invoice||'—';
@@ -1693,7 +1694,9 @@ function openEPm(btn){
   const c=_epmRow.querySelectorAll('td');
   document.getElementById('epmDesc').value=c[1].textContent;
   document.getElementById('epmJumlah').value=c[3].textContent.replace(/[^0-9]/g,'');
+  document.getElementById('epmTgl').value=_epmRow.dataset.tanggal||'';
   document.getElementById('epmInv').value=c[5].textContent==='—'?'':c[5].textContent;
+  setSelect('epmSumber',c[2].textContent);
   setSelect('epmMetode',c[4].textContent);
   openModal('mEPm');
 }
@@ -1704,8 +1707,8 @@ async function savePm(){
   const jml=document.getElementById('epmJumlah').value;
   const metode=document.getElementById('epmMetode').value;
   const inv=document.getElementById('epmInv').value||null;
-  const tgl=_epmRow?_epmRow.dataset.tanggal:new Date().toISOString().split('T')[0];
-  const sumber=_epmRow?_epmRow.querySelectorAll('td')[2].textContent:'';
+  const tgl=document.getElementById('epmTgl').value||(_epmRow?_epmRow.dataset.tanggal:new Date().toISOString().split('T')[0]);
+  const sumber=document.getElementById('epmSumber').value;
   try{
     const d=await(await fetch(API+'/pemasukan',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epmId,keterangan:desc,jumlah:parseInt(jml),metode_pembayaran:metode,nomor_invoice:inv,tanggal:tgl,sumber})})).json();
     if(d.success){closeModal('mEPm');await fetchPemasukan();await fetchDashboard();toast('Pemasukan diperbarui!');}
@@ -1745,7 +1748,7 @@ function renderPengeluaran(rows){
     const tr=document.createElement('tr');
     tr.dataset.k=r.kategori;
     tr.dataset.id=r.id;
-    tr.dataset.tanggal=r.tanggal;
+    tr.dataset.tanggal=(r.tanggal+'').split('T')[0];
     const rp='Rp'+parseInt(r.jumlah).toLocaleString('id-ID');
     tr.innerHTML=`<td>${_fmtTgl(r.tanggal)}</td><td>${r.keterangan||''}</td><td>${r.kategori}</td><td style="font-weight:700;color:var(--red500)">${rp}</td><td>${r.metode_pembayaran}</td><td>—</td><td><button class="btn btn-ghost btn-sm" onclick="openEPn(this)">Edit</button></td>`;
     tb.appendChild(tr);
@@ -1787,7 +1790,9 @@ function openEPn(btn){
   const c=_epnRow.querySelectorAll('td');
   document.getElementById('epnDesc').value=c[1].textContent;
   document.getElementById('epnJumlah').value=c[3].textContent.replace(/[^0-9]/g,'');
+  document.getElementById('epnTgl').value=_epnRow.dataset.tanggal||'';
   setSelect('epnKat',c[2].textContent);
+  setSelect('epnMetode',c[4].textContent);
   openModal('mEPn');
 }
 
@@ -1798,7 +1803,7 @@ async function savePn(){
   const kat=document.getElementById('epnKat').value;
   const metode=document.getElementById('epnMetode').value;
   try{
-    const d=await(await fetch(API+'/pengeluaran',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epnId,tanggal:_epnRow?_epnRow.dataset.tanggal:new Date().toISOString().split('T')[0],keterangan:desc,kategori:kat,jumlah:parseInt(jml),metode_pembayaran:metode})})).json();
+    const d=await(await fetch(API+'/pengeluaran',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_epnId,tanggal:document.getElementById('epnTgl').value||(_epnRow?_epnRow.dataset.tanggal:new Date().toISOString().split('T')[0]),keterangan:desc,kategori:kat,jumlah:parseInt(jml),metode_pembayaran:metode})})).json();
     if(d.success){closeModal('mEPn');await fetchPengeluaran();await fetchDashboard();toast('Pengeluaran diperbarui!');}
   }catch(e){toast('Gagal memperbarui pengeluaran','#ef4444');}
 }
